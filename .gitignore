@@ -1,0 +1,43 @@
+# Build artifacts
+build/
+sdkconfig
+sdkconfig.old
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.cmake
+*.ninja
+
+# VS Code settings
+.vscode/
+
+# Python virtual environment
+venv/
+
+# Temporary editor files
+*~
+*.swp
+*.swo
+*.bak
+
+# Log files
+*.log
+
+# Other files
+*.o
+*.a
+
+# Backup files
+*.bak
+
+# Miscellaneous
+*.bin
+*.elf
+
+# Partition table backups
+partitions*.bin
+
+# Others
+.idea/
