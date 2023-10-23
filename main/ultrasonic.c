@@ -1,41 +1,46 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/gpio.h"
 #include "esp_log.h"
+#include "hc_sr04.h"
 
-#define TRIG_GPIO 4
-#define ECHO_GPIO 5
+// Ultrasonic sensor 1
+#define TRIG_GPIO_1 4
+#define ECHO_GPIO_1 5
+// Ultrasonic sensor 2
+#define TRIG_GPIO_2 21
+#define ECHO_GPIO_2 22
+// Bin threshold in cm
+#define DISTANCE_THRESHOLD 10.0
+
 
 static const char *TAG = "HC-SR04";
 
 void check_distance(void *params) {
-    gpio_set_direction(TRIG_GPIO, GPIO_MODE_OUTPUT);
-    gpio_set_direction(ECHO_GPIO, GPIO_MODE_INPUT);
+    hc_sr04_t sensor_1 = { .trig_pin = TRIG_GPIO_1, .echo_pin = ECHO_GPIO_1 };
+    hc_sr04_t sensor_2 = { .trig_pin = TRIG_GPIO_2, .echo_pin = ECHO_GPIO_2 };
 
-    gpio_set_level(TRIG_GPIO, 0);
-    vTaskDelay(10 / portTICK_PERIOD_MS);
+    hc_sr04_init(&sensor_1);
+    hc_sr04_init(&sensor_2);
 
     while (1) {
-        // Send trigger pulse
-        gpio_set_level(TRIG_GPIO, 1);
-        ets_delay_us(10);
-        gpio_set_level(TRIG_GPIO, 0);
+        float distance_1 = hc_sr04_get_distance(&sensor_1);
+        if (distance_1 < DISTANCE_THRESHOLD) {
+            ESP_LOGI(TAG, "Sensor 1 - Distance: %f cm - FULL!", distance_1);
+        } else {
+            ESP_LOGI(TAG, "Sensor 1 - Distance: %f cm", distance_1);
+        }
 
-        // Wait for echo
-        while (gpio_get_level(ECHO_GPIO) == 0);
-
-        uint32_t start_time = esp_timer_get_time();
-        while (gpio_get_level(ECHO_GPIO) == 1);
-        uint32_t end_time = esp_timer_get_time();
-
-        // Calculate distance
-        float distance = (end_time - start_time) * 0.0343 / 2;
-        ESP_LOGI(TAG, "Distance: %f cm", distance);
+        float distance_2 = hc_sr04_get_distance(&sensor_2);
+        if (distance_2 < DISTANCE_THRESHOLD) {
+            ESP_LOGI(TAG, "Sensor 2 - Distance: %f cm - FULL!", distance_2);
+        } else {
+            ESP_LOGI(TAG, "Sensor 2 - Distance: %f cm", distance_2);
+        }
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
 void app_main(void) {
-    xTaskCreate(check_distance, "check_distance", 2048, NULL, 5, NULL);
+    xTaskCreate(check_distance, "check_distance", 4096, NULL, 5, NULL);
 }
