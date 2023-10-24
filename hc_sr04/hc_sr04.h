@@ -8,7 +8,13 @@ typedef struct {
     gpio_num_t echo_pin;
 } hc_sr04_t;
 
-void hc_sr04_init(hc_sr04_t *sensor);
+typedef struct {
+    float distance_1;
+    float distance_2;
+} SensorDistances;
+
+void hc_sr04_init(void);
 float hc_sr04_get_distance(hc_sr04_t *sensor);
+void check_distance(char *outputStr, size_t bufferSize);
 
 #endif // HC_SR04_H
