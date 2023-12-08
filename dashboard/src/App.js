@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import binImage from './images/BinCascade.jpeg';
+import binImage from './images/Binny.png';
 
 const App = () => {
   const [distance1, setDistance1] = useState('N/A');
@@ -41,8 +41,8 @@ const App = () => {
         <thead>
           <tr>
             <th style={{ border: '1px solid black', padding: '10px' }}>Type</th>
-            <th style={{ border: '1px solid black', padding: '10px' }}>Organic</th>
             <th style={{ border: '1px solid black', padding: '10px' }}>Inorganic</th>
+            <th style={{ border: '1px solid black', padding: '10px' }}>Organic</th>
           </tr>
         </thead>
         <tbody>
